@@ -1,5 +1,8 @@
 #include "VulkanApplication.hpp"
 
+#include <iostream>
+#include <vector>
+
 void VulkanApplication::run() {
 	initWindow();
 	initVulkan();
@@ -20,6 +23,18 @@ void VulkanApplication::initVulkan() {
 }
 
 void VulkanApplication::createInstance() {
+	/*
+	* Check and show available extensions names
+	*/
+	uint32_t extensionsCount = 0;
+	vkEnumerateInstanceExtensionProperties(nullptr, &extensionsCount, nullptr);
+	std::vector<VkExtensionProperties> extensions(extensionsCount);
+	vkEnumerateInstanceExtensionProperties(nullptr, &extensionsCount, extensions.data());
+	std::cout << "available extensions:" << std::endl;
+	for (const auto& extension : extensions) {
+		std::cout << extension.extensionName << std::endl;
+	}
+
 	/*
 	* Application Info
 	*/
@@ -58,13 +73,17 @@ void VulkanApplication::mainLoop() {
 
 void VulkanApplication::cleanUp() {
 	/*
-	* Clean Up Window
-	*/
-	glfwDestroyWindow(mWindow);
-	glfwTerminate(); // corresponding to glfwInit()
-
-	/*
 	* Clean Up vulkan
 	*/
-	;
+	if (mInstance != VK_NULL_HANDLE) {
+		vkDestroyInstance(mInstance, nullptr);
+	}
+
+	/*
+	* Clean Up Window
+	*/
+	if (mWindow) {
+		glfwDestroyWindow(mWindow);
+	}
+	glfwTerminate(); // corresponding to glfwInit()
 }

@@ -16,6 +16,6 @@ private:
 
 	void cleanUp();
 
-	GLFWwindow* mWindow;
-	VkInstance mInstance;
+	GLFWwindow* mWindow = nullptr;
+	VkInstance mInstance = VK_NULL_HANDLE;
 };
